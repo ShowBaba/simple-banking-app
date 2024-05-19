@@ -48,9 +48,6 @@ func defaultConfig() *Config {
 		DbPassword:                  os.Getenv("DB_PASSWORD"),
 		ThirdPartyTnxServiceBaseURL: os.Getenv("THIRD_PARTY_TRANSACTION_SERVICE_BASE_URL"),
 		DbName:                      os.Getenv("DB_NAME"),
-		RedisAddr:                   os.Getenv("REDIS_ADDRESS"),
-		MailUsername:                os.Getenv("MAIL_USERNAME"),
-		MailPassword:                os.Getenv("MAIL_PASSWORD"),
 		RabbitmqServerURL:           os.Getenv("RABBITMQ_SERVER_URL"),
 	}
 }

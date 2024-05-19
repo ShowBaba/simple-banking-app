@@ -3,8 +3,9 @@ package dtos
 import "simple-banking-app/internal/common"
 
 type TransactionDTO struct {
-	Type   string  `json:"type" validate:"required"`
-	Amount float64 `json:"amount" validate:"required"`
+	Type      string  `json:"type" validate:"required"`
+	Amount    float64 `json:"amount" validate:"required"`
+	Narration string  `json:"narration"`
 }
 
 var validTransactionType = map[common.TransactionType]bool{

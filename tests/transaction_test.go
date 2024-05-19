@@ -23,7 +23,7 @@ func init() {
 }
 
 func setup() {
-	payload := fmt.Sprintf(`{"email":"sam@mail.com", "password":"password1"}`)
+	payload := fmt.Sprintf(`{"email":"show@mail.com", "password":"password2"}`)
 	res, _, err := runRequest("/auth/login", "POST", payload, map[string]string{}, "")
 	if err != nil {
 		log.Fatalln(err)
@@ -45,7 +45,7 @@ func setup() {
 func TestCreateTransaction(t *testing.T) {
 	createTransactionPath := "/transaction/create-transaction"
 	t.Run("successful credit transaction", func(t *testing.T) {
-		body := fmt.Sprintf(`{"type":"CREDIT", "amount":1000.67}`)
+		body := fmt.Sprintf(`{"type":"CREDIT", "amount":100.67}`)
 
 		res, _, err := runRequest(createTransactionPath, "POST", body, map[string]string{}, authToken)
 
@@ -60,6 +60,15 @@ func TestCreateTransaction(t *testing.T) {
 
 		utils.AssertEqual(t, nil, err, "err should be nil")
 		utils.AssertEqual(t, fiber.StatusOK, res.StatusCode, "Status code")
+	})
+
+	t.Run("insufficient funds", func(t *testing.T) {
+		body := fmt.Sprintf(`{"type":"DEBIT", "amount":100.23}`)
+
+		res, _, err := runRequest(createTransactionPath, "POST", body, map[string]string{}, authToken)
+
+		utils.AssertEqual(t, nil, err, "err should be nil")
+		utils.AssertEqual(t, fiber.StatusBadRequest, res.StatusCode, "Status code")
 	})
 }
 

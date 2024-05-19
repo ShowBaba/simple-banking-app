@@ -56,8 +56,9 @@ func (u *UserService) GetUserDetails(c *fiber.Ctx) (*models.UserWithDetails, *co
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			if err := u.walletRepo.CreateWallet(&models.Wallet{
-				UserID:  &userId,
-				Balance: 0,
+				UserID:    &userId,
+				Balance:   0,
+				AccountID: utils.GenerateAccountID(),
 			}); err != nil {
 				log.Error(zap.Error(err))
 				return nil, u.restErr.ServerError(common.ErrSomethingWentWrong)

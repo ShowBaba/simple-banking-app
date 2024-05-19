@@ -11,10 +11,12 @@ type Wallet struct {
 	gorm.Model `json:"-"`
 	mu         sync.Mutex
 
-	ID                   uint    `json:"-" gorm:"primarykey"`
+	ID                   uint `json:"-" gorm:"primarykey"`
+	AccountID            string
 	UserID               *uint   `json:"-" gorm:"index"`
 	Balance              float64 `gorm:"not null;type:numeric(10,2);"`
 	PrevBalance          float64 `json:"" gorm:"not null;type:numeric(10,2);"`
+	Difference           float64 `json:"" gorm:"not null;type:numeric(10,2);"`
 	TransactionReference string
 	CreatedAt            time.Time
 	UpdatedAt            time.Time `json:"-"`
@@ -26,6 +28,8 @@ func (w *Wallet) TopUpWalletBalance(val float64) {
 
 	w.PrevBalance = w.Balance
 	w.Balance += val
+	w.Difference = val
+
 }
 
 func (w *Wallet) DeductWalletBalance(val float64) error {
@@ -34,6 +38,7 @@ func (w *Wallet) DeductWalletBalance(val float64) error {
 
 	w.PrevBalance = w.Balance
 	w.Balance -= val
+	w.Difference = -val
 
 	if w.Balance < 0 {
 		return errors.New("balance cannot be less than zero")

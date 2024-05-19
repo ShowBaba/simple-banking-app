@@ -61,7 +61,8 @@ func (t *TransactionService) CreateTransaction(c *fiber.Ctx) (*dtos.TransactionD
 		Type:      common.TransactionType(input.Type),
 		UserID:    &userId,
 		Amount:    input.Amount,
-		AccountID: "default_account_id",
+		AccountID: wallet.AccountID,
+		Narration: input.Narration,
 	}
 
 	responseFromAPI, err := t.sendToThirdPartyProvider(&transaction)
@@ -92,15 +93,9 @@ func (t *TransactionService) CreateTransaction(c *fiber.Ctx) (*dtos.TransactionD
 			}
 
 			transaction.Status = common.TransactionStatus(responseFromAPI.Status)
-
 			// create the transaction along with a new wallet record
-			newWallet := models.Wallet{
-				UserID:      &userId,
-				PrevBalance: wallet.PrevBalance,
-				Balance:     wallet.Balance,
-			}
-
-			err = t.transactionRepo.CreateTransactionWithWallet(&transaction, &newWallet)
+			wallet.ID = 0
+			err = t.transactionRepo.CreateTransactionWithWallet(&transaction, wallet)
 			if err != nil {
 				log.Error(fmt.Errorf("error creating transaction record %v", err))
 				return nil, t.restErr.ServerError(common.ErrSomethingWentWrong)

@@ -58,8 +58,9 @@ func (t *TransactionValidator) ValidateCreateTransaction(c *fiber.Ctx) error {
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			if err := t.walletRepo.CreateWallet(&models.Wallet{
-				UserID:  &uintUserId,
-				Balance: 0,
+				UserID:    &uintUserId,
+				Balance:   0,
+				AccountID: utils.GenerateAccountID(),
 			}); err != nil {
 				log.Error(zap.Error(err))
 				return c.Status(http.StatusInternalServerError).JSON(t.restErr.ServerError(common.ErrSomethingWentWrong))

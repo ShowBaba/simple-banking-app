@@ -133,6 +133,10 @@ func GenerateReference() string {
 	return fmt.Sprintf("txn-%d", time.Now().UnixNano())
 }
 
+func GenerateAccountID() string {
+	return fmt.Sprintf("%d", time.Now().UnixNano())
+}
+
 type IError struct {
 	Field string
 	Tag   string
